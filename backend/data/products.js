@@ -1,0 +1,139 @@
+module.exports = [
+  {
+    id: 1,
+    name: 'iPhone 15 Pro Max',
+    category: 'Smartphone',
+    price: 19999000,
+    image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500',
+    rating: 4.9,
+    specs: {
+      chip: 'A17 Pro Chip',
+      display: '6.7 inch Super Retina XDR',
+      camera: '48MP Main + 12MP Ultra Wide',
+      battery: 'Up to 29 hours video playback',
+      storage: '256GB / 512GB / 1TB',
+    },
+    description:
+      'iPhone terbaru dengan chip A17 Pro, kamera 48MP yang canggih, dan desain titanium yang premium.',
+  },
+  {
+    id: 2,
+    name: 'Samsung Galaxy S24 Ultra',
+    category: 'Smartphone',
+    price: 18999000,
+    image: 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=500',
+    rating: 4.8,
+    specs: {
+      processor: 'Snapdragon 8 Gen 3',
+      display: '6.8 inch Dynamic AMOLED 2X',
+      camera: '200MP Wide + 50MP Periscope Telephoto',
+      battery: '5000mAh with 45W Fast Charging',
+      storage: '256GB / 512GB / 1TB',
+    },
+    description:
+      'Flagship Samsung dengan kamera 200MP, S Pen terintegrasi, dan performa gaming maksimal.',
+  },
+  {
+    id: 3,
+    name: 'MacBook Air M3',
+    category: 'Laptop',
+    price: 18999000,
+    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500',
+    rating: 4.9,
+    specs: {
+      chip: 'Apple M3 Chip',
+      display: '13.6 inch Liquid Retina',
+      memory: '8GB / 16GB / 24GB Unified Memory',
+      storage: '256GB / 512GB / 1TB / 2TB SSD',
+      battery: 'Up to 18 hours',
+    },
+    description:
+      'Laptop tipis dan ringan dengan chip M3 yang powerful, perfect untuk produktivitas dan creative work.',
+  },
+  {
+    id: 4,
+    name: 'iPad Pro 12.9 inch M2',
+    category: 'Tablet',
+    price: 16999000,
+    image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500',
+    rating: 4.8,
+    specs: {
+      chip: 'M2 Chip',
+      display: '12.9 inch Liquid Retina XDR',
+      camera: '12MP Wide + 10MP Ultra Wide',
+      connectivity: 'Wi-Fi 6E + 5G',
+      storage: '128GB to 2TB',
+    },
+    description:
+      'iPad Pro dengan layar XDR stunning, chip M2 untuk performa desktop-class, dan Apple Pencil support.',
+  },
+  {
+    id: 5,
+    name: 'Sony WH-1000XM5',
+    category: 'Audio',
+    price: 5499000,
+    image: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=500',
+    rating: 4.9,
+    specs: {
+      driver: '30mm Dynamic Driver',
+      noiseCancelling: 'Industry-leading ANC',
+      battery: 'Up to 30 hours',
+      connectivity: 'Bluetooth 5.2, Multipoint',
+      weight: '250g',
+    },
+    description:
+      'Headphone wireless premium dengan noise cancellation terbaik di kelasnya dan kualitas audio superior.',
+  },
+  {
+    id: 6,
+    name: 'Apple Watch Series 9',
+    category: 'Wearable',
+    price: 6499000,
+    image: 'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=500',
+    rating: 4.7,
+    specs: {
+      chip: 'S9 SiP',
+      display: 'Always-On Retina LTPO OLED',
+      health: 'Blood Oxygen, ECG, Temperature',
+      battery: 'Up to 18 hours',
+      waterResistant: '50 meters',
+    },
+    description:
+      'Smartwatch dengan health tracking advanced, always-on display, dan integrasi sempurna dengan iPhone.',
+  },
+  {
+    id: 7,
+    name: 'DJI Mini 4 Pro',
+    category: 'Camera',
+    price: 12999000,
+    image: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=500',
+    rating: 4.8,
+    specs: {
+      camera: '4K/60fps HDR Video',
+      sensor: '1/1.3 inch CMOS',
+      flightTime: 'Up to 34 minutes',
+      weight: '249g',
+      obstacle: 'Omnidirectional Obstacle Sensing',
+    },
+    description:
+      'Drone compact dengan kamera 4K pro, flight time lama, dan obstacle avoidance canggih untuk aerial photography.',
+  },
+  {
+    id: 8,
+    name: 'PlayStation 5 Slim',
+    category: 'Gaming',
+    price: 7999000,
+    image: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=500',
+    rating: 4.9,
+    specs: {
+      processor: 'AMD Zen 2',
+      gpu: 'AMD RDNA 2',
+      storage: '1TB SSD',
+      resolution: 'Up to 8K',
+      rayTracing: 'Hardware Ray Tracing',
+    },
+    description:
+      'Console gaming next-gen dengan SSD ultra-fast, ray tracing, dan library game eksklusif yang luar biasa.',
+  },
+];
+
