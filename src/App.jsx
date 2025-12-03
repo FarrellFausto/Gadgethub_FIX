@@ -65,10 +65,12 @@ function App() {
       setIsLoadingData(true);
       setDataError("");
       const [productData, categoryData] = await Promise.all([
-        fetchProducts(),
+        fetchProducts({ page: 1, limit: 6 }),
         fetchCategories(),
       ]);
-      setProducts(productData);
+      // Handle both old format (array) and new format (object with data and pagination)
+      const products = Array.isArray(productData) ? productData : (productData.data || []);
+      setProducts(products);
       setCategories(categoryData);
     } catch (error) {
       setDataError(error.message || "Gagal memuat data dari API");

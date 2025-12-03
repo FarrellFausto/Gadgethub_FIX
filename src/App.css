@@ -534,21 +534,24 @@ body {
 @media (min-width: 640px) {
   .cart-item {
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
+    gap: clamp(0.75rem, 3vw, 1.5rem);
+    padding: clamp(1rem, 3vw, 1.5rem);
   }
 }
 
 .cart-item-image {
-  width: 100%;
-  height: 150px;
+  width: clamp(70px, 18vw, 120px);
+  height: clamp(70px, 18vw, 120px);
   object-fit: cover;
   border-radius: var(--radius-md);
+  flex-shrink: 0;
 }
 
 @media (min-width: 640px) {
   .cart-item-image {
-    width: 100px;
-    height: 100px;
+    width: clamp(80px, 15vw, 120px);
+    height: clamp(80px, 15vw, 120px);
   }
 }
 
@@ -674,6 +677,39 @@ body {
   .modal-content {
     padding: var(--spacing-xl);
   }
+}
+
+/* ==================== PRODUCT DETAIL RESPONSIVE ==================== */
+.product-detail-card {
+  padding: 1rem !important;
+}
+
+@media (min-width: 768px) {
+  .product-detail-card {
+    padding: 2rem !important;
+  }
+}
+
+.product-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .product-detail-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+}
+
+.product-detail-grid img {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 /* ==================== TOUCH OPTIMIZATIONS ==================== */

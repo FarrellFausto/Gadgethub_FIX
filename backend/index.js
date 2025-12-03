@@ -184,11 +184,18 @@ app.get('/api', (req, res) => {
   });
 });
 
-// GET semua products dengan filter
+// GET semua products dengan filter dan pagination
 app.get('/api/products', async (req, res) => {
   try {
-    const { category, search } = req.query;
-    let query = supabase.from('products').select('*');
+    const { category, search, page = 1, limit = 6 } = req.query;
+    
+    // Convert page dan limit ke number
+    const pageNum = Math.max(1, parseInt(page) || 1);
+    const limitNum = Math.max(1, Math.min(100, parseInt(limit) || 6)); // Max 100 per page
+    const offset = (pageNum - 1) * limitNum;
+
+    // Build query
+    let query = supabase.from('products').select('*', { count: 'exact' });
 
     // Filter by category
     if (category) {
@@ -200,11 +207,27 @@ app.get('/api/products', async (req, res) => {
       query = query.ilike('name', `%${search}%`);
     }
 
-    const { data, error } = await query.order('created_at', { ascending: false });
+    // Order dan pagination
+    const { data, error, count } = await query
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limitNum - 1);
 
     if (error) throw error;
 
-    res.json(data);
+    // Calculate total pages
+    const totalPages = Math.ceil((count || 0) / limitNum);
+
+    res.json({
+      data: data || [],
+      pagination: {
+        page: pageNum,
+        limit: limitNum,
+        total: count || 0,
+        totalPages: totalPages,
+        hasNextPage: pageNum < totalPages,
+        hasPrevPage: pageNum > 1
+      }
+    });
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ message: 'Error fetching products', error: error.message });

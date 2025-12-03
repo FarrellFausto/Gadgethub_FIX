@@ -52,26 +52,26 @@ function CartPage({ items = [], onUpdateQuantity, onRemoveItem, onNavigate }) {
         <div className="container" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <ShoppingCart size={48} />
           <div>
-            <h1 style={{ fontSize: '2.5rem', fontWeight: '800' }}>Keranjang</h1>
-            <p style={{ opacity: 0.9 }}>{items.length} produk disimpan</p>
+            <h1 style={{ fontSize: 'clamp(1.75rem, 5vw, 2.5rem)', fontWeight: '800' }}>Keranjang</h1>
+            <p style={{ opacity: 0.9, fontSize: 'clamp(0.875rem, 2vw, 1rem)' }}>{items.length} produk disimpan</p>
           </div>
         </div>
       </div>
 
-      <div className="container" style={{ padding: '2rem 1rem', display: 'grid', gap: '2rem', gridTemplateColumns: '2fr 1fr' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+      <div className="container" style={{ padding: '1rem', display: 'grid', gap: '1.5rem', gridTemplateColumns: '1fr' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', order: 1 }}>
           {items.map(item => (
             <div key={item.id} className="card" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
               <img
                 src={item.image}
                 alt={item.name}
-                style={{ width: '120px', height: '120px', borderRadius: '0.75rem', objectFit: 'cover' }}
+                style={{ width: 'clamp(70px, 18vw, 120px)', height: 'clamp(70px, 18vw, 120px)', borderRadius: '0.75rem', objectFit: 'cover', flexShrink: 0 }}
               />
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div>
                     <p style={{ fontSize: '0.85rem', color: '#94a3b8', marginBottom: '0.25rem' }}>{item.category}</p>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#0f172a' }}>{item.name}</h3>
+                    <h3 style={{ fontSize: 'clamp(0.875rem, 3vw, 1.25rem)', fontWeight: '700', color: '#0f172a' }}>{item.name}</h3>
                   </div>
                   <button
                     onClick={() => onRemoveItem(item.id)}
@@ -90,7 +90,7 @@ function CartPage({ items = [], onUpdateQuantity, onRemoveItem, onNavigate }) {
                   {item.description}
                 </p>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <strong style={{ fontSize: '1.25rem', color: '#0f172a' }}>
+                  <strong style={{ fontSize: 'clamp(0.875rem, 3vw, 1.25rem)', color: '#0f172a' }}>
                     {formatPrice(item.price * item.quantity)}
                   </strong>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -139,14 +139,14 @@ function CartPage({ items = [], onUpdateQuantity, onRemoveItem, onNavigate }) {
           ))}
         </div>
 
-        <div>
-          <div className="card" style={{ position: 'sticky', top: '6rem' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '1rem' }}>Ringkasan Belanja</h3>
+        <div style={{ order: 2 }}>
+          <div className="card" style={{ position: 'sticky', top: '6rem', height: 'fit-content' }}>
+            <h3 style={{ fontSize: 'clamp(1rem, 3vw, 1.25rem)', fontWeight: '700', marginBottom: '1rem' }}>Ringkasan Belanja</h3>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem', color: '#64748b' }}>
               <span>Total Item</span>
               <span>{items.reduce((sum, item) => sum + item.quantity, 0)}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', color: '#0f172a', fontWeight: '700', fontSize: '1.25rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', color: '#0f172a', fontWeight: '700', fontSize: 'clamp(1rem, 3vw, 1.25rem)' }}>
               <span>Total Harga</span>
               <span>{formatPrice(cartTotal)}</span>
             </div>

@@ -773,8 +773,9 @@
 // export default ProductsPage;
 
 import ProductCard from "../components/ProductCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, PlusCircle, X, Edit2, Trash2 } from "lucide-react";
+import { fetchProducts } from "../services/api";
 
 function ProductsPage({
   products = [],
@@ -795,6 +796,9 @@ function ProductsPage({
   const [editingProduct, setEditingProduct] = useState(null);
   const [formError, setFormError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginationData, setPaginationData] = useState(null);
+  const [paginatedProducts, setPaginatedProducts] = useState([]);
   const initialFormState = {
     name: "",
     category: "",
@@ -806,23 +810,37 @@ function ProductsPage({
   const [formData, setFormData] = useState(initialFormState);
   const [specFields, setSpecFields] = useState([]);
 
-  const availableCategories = [
-    "All",
-    ...new Set(
-      (categories.length
-        ? categories
-        : products.map((product) => product.category)) || []
-    ),
-  ];
+  // Fetch products when page, category, or search changes
+  useEffect(() => {
+    const loadPaginatedProducts = async () => {
+      try {
+        const result = await fetchProducts({
+          page: currentPage,
+          limit: 6,
+          category: selectedCategory !== "All" ? selectedCategory : undefined,
+          search: searchQuery || undefined,
+        });
 
-  const filteredProducts = products.filter((product) => {
-    const matchCategory =
-      selectedCategory === "All" || product.category === selectedCategory;
-    const matchSearch = product.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    return matchCategory && matchSearch;
-  });
+        // Handle response format with pagination data
+        if (result.data && result.pagination) {
+          setPaginationData(result.pagination);
+          setPaginatedProducts(result.data);
+        } else if (Array.isArray(result)) {
+          // Fallback for old format
+          setPaginatedProducts(result);
+          setPaginationData(null);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    loadPaginatedProducts();
+  }, [currentPage, selectedCategory, searchQuery]);
+
+  const availableCategories = categories && categories.length > 0
+    ? ["All", ...categories]
+    : ["All"];
 
   const openCreateForm = () => {
     setIsFormVisible(true);
@@ -930,7 +948,7 @@ function ProductsPage({
         <div
           style={{
             background: "linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)",
-            padding: "2rem 0 4rem 0",
+            padding: "1.5rem 0 3rem 0",
             color: "white",
           }}
         >
@@ -941,12 +959,12 @@ function ProductsPage({
                 background: "rgba(255, 255, 255, 0.2)",
                 color: "white",
                 border: "none",
-                padding: "0.5rem 1.5rem",
+                padding: "0.5rem 1rem",
                 borderRadius: "0.5rem",
                 cursor: "pointer",
-                fontSize: "1rem",
+                fontSize: "clamp(0.875rem, 3vw, 1rem)",
                 fontWeight: "600",
-                marginBottom: "1.5rem",
+                marginBottom: "1rem",
                 backdropFilter: "blur(10px)",
               }}
             >
@@ -955,15 +973,9 @@ function ProductsPage({
           </div>
         </div>
 
-        <div className="container" style={{ marginTop: "-3rem" }}>
-          <div className="card" style={{ padding: "2rem" }}>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                gap: "3rem",
-              }}
-            >
+        <div className="container" style={{ marginTop: "-3rem", padding: "1rem" }}>
+          <div className="card product-detail-card">
+            <div className="product-detail-grid">
               {/* Image Section */}
               <div>
                 <img
@@ -1023,7 +1035,7 @@ function ProductsPage({
                   </div>
                   <h1
                     style={{
-                      fontSize: "2rem",
+                      fontSize: "clamp(1.5rem, 5vw, 2rem)",
                       fontWeight: "800",
                       marginBottom: "0.75rem",
                       color: "#0f172a",
@@ -1033,7 +1045,7 @@ function ProductsPage({
                   </h1>
                   <div
                     style={{
-                      fontSize: "2.25rem",
+                      fontSize: "clamp(1.75rem, 6vw, 2.25rem)",
                       fontWeight: "800",
                       background:
                         "linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)",
@@ -1137,8 +1149,8 @@ function ProductsPage({
                     className="btn btn-primary"
                     style={{
                       width: "100%",
-                      fontSize: "1.125rem",
-                      padding: "1rem",
+                      fontSize: "clamp(0.875rem, 3vw, 1.125rem)",
+                      padding: "clamp(0.75rem, 2vw, 1rem)",
                     }}
                     onClick={() => {
                       const confirmation = window.confirm(
@@ -1166,8 +1178,9 @@ function ProductsPage({
                       background: "#0f172a",
                       color: "white",
                       fontWeight: "600",
-                      padding: "1rem",
+                      padding: "clamp(0.75rem, 2vw, 1rem)",
                       borderRadius: "0.75rem",
+                      fontSize: "clamp(0.875rem, 3vw, 1rem)",
                     }}
                     onClick={() => onAddToCart(selectedProduct)}
                   >
@@ -1246,7 +1259,7 @@ function ProductsPage({
           <p style={{ fontSize: "1.125rem", opacity: 0.9 }}>
             {loading
               ? "Memuat produk..."
-              : `${filteredProducts.length} produk tersedia`}
+              : `${paginatedProducts.length} produk tersedia`}
           </p>
         </div>
       </div>
@@ -1619,7 +1632,7 @@ function ProductsPage({
         </div>
 
         {/* Products Grid */}
-        {loading && (
+        {(loading || paginatedProducts.length === 0) && !paginationData && !error && (
           <div
             style={{
               textAlign: "center",
@@ -1631,7 +1644,7 @@ function ProductsPage({
           </div>
         )}
 
-        {error && !loading && (
+        {error && (
           <div
             style={{
               textAlign: "center",
@@ -1643,28 +1656,128 @@ function ProductsPage({
           </div>
         )}
 
-        {!loading && !error && filteredProducts.length > 0 && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-              gap: "2rem",
-            }}
-          >
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onViewDetail={() => setSelectedProduct(product)}
-                onToggleWishlist={onToggleWishlist}
-                isInWishlist={isInWishlist}
-                onAddToCart={onAddToCart}
-              />
-            ))}
+        {paginatedProducts.length > 0 && (
+          <div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+                gap: "2rem",
+                marginBottom: "3rem",
+              }}
+            >
+              {paginatedProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onViewDetail={() => setSelectedProduct(product)}
+                  onToggleWishlist={onToggleWishlist}
+                  isInWishlist={isInWishlist}
+                  onAddToCart={onAddToCart}
+                />
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "1rem",
+                padding: "2rem",
+                flexWrap: "wrap",
+              }}
+            >
+              <button
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={!paginationData?.hasPrevPage}
+                style={{
+                  padding: "0.75rem 1.5rem",
+                  background: paginationData?.hasPrevPage
+                    ? "linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)"
+                    : "#e2e8f0",
+                  color: paginationData?.hasPrevPage ? "white" : "#94a3b8",
+                  border: "none",
+                  borderRadius: "0.75rem",
+                  cursor: paginationData?.hasPrevPage ? "pointer" : "not-allowed",
+                  fontWeight: "600",
+                  fontSize: "0.9rem",
+                }}
+              >
+                ← Sebelumnya
+              </button>
+
+              <div
+                style={{
+                  display: "flex",
+                  gap: "0.5rem",
+                  alignItems: "center",
+                }}
+              >
+                {paginationData && Array.from({ length: paginationData.totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "0.5rem",
+                        border: "none",
+                        background:
+                          currentPage === page
+                            ? "linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)"
+                            : "white",
+                        color: currentPage === page ? "white" : "#64748b",
+                        fontWeight: currentPage === page ? "700" : "500",
+                        cursor: "pointer",
+                        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                        fontSize: "0.9rem",
+                      }}
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
+              </div>
+
+              <button
+                onClick={() =>
+                  setCurrentPage(Math.min(paginationData?.totalPages || 3, currentPage + 1))
+                }
+                disabled={!paginationData?.hasNextPage}
+                style={{
+                  padding: "0.75rem 1.5rem",
+                  background: paginationData?.hasNextPage
+                    ? "linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)"
+                    : "#e2e8f0",
+                  color: paginationData?.hasNextPage ? "white" : "#94a3b8",
+                  border: "none",
+                  borderRadius: "0.75rem",
+                  cursor: paginationData?.hasNextPage ? "pointer" : "not-allowed",
+                  fontWeight: "600",
+                  fontSize: "0.9rem",
+                }}
+              >
+                Berikutnya →
+              </button>
+
+              <div
+                style={{
+                  color: "#64748b",
+                  fontSize: "0.9rem",
+                  fontWeight: "500",
+                  marginLeft: "1rem",
+                }}
+              >
+                {paginationData ? `Halaman ${paginationData.page} dari ${paginationData.totalPages}` : "Memuat..."}
+              </div>
+            </div>
           </div>
         )}
 
-        {!loading && !error && filteredProducts.length === 0 && (
+        {paginatedProducts.length === 0 && paginationData && (
           <div
             style={{
               textAlign: "center",

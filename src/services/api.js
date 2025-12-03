@@ -67,11 +67,13 @@ const handleResponse = async (response) => {
     return response.json();
 };
 
-// GET all products with optional filters
-export const fetchProducts = async ({ category, search } = {}) => {
+// GET all products with optional filters and pagination
+export const fetchProducts = async ({ category, search, page = 1, limit = 6 } = {}) => {
     const params = new URLSearchParams();
     if (category && category !== 'All') params.append('category', category);
     if (search) params.append('search', search);
+    params.append('page', page);
+    params.append('limit', limit);
 
     const queryString = params.toString();
     const url = `${API_BASE_URL}/products${queryString ? `?${queryString}` : ''}`;
